@@ -148,7 +148,7 @@ Component* SubCircuit::construct( QString type, QString id )
         bool dip = QFile::exists( pkgeFile );
         bool ls  = QFile::exists( pkgFileLS );
         if( !dip && !ls ){
-            qDebug() << "SubCircuit::construct: Error No package files found for "<<name<<endl;
+            qDebug() << "SubCircuit::construct: Error No package files found for "<<name<<Qt::endl;
             return NULL;
         }
 
@@ -182,7 +182,7 @@ Component* SubCircuit::construct( QString type, QString id )
     }
 
     if( packageList.isEmpty() ){
-        qDebug() << "SubCircuit::construct: No Packages found for"<<name<<endl;
+        qDebug() << "SubCircuit::construct: No Packages found for"<<name<<Qt::endl;
         return NULL;
     }
 
@@ -276,31 +276,31 @@ void SubCircuit::loadSubCircuit( QString doc )
 
     QList<Linker*> linkList;   // Linked  Component list
 
-    QVector<QStringRef> docLines = doc.splitRef("\n");
-    for( QStringRef line : docLines )
+    QList<QStringView> docLines = QStringView(doc).split(u"\n");
+    for( QStringView line : docLines )
     {
-        if( line.startsWith("<item") )
+        if( line.toString().startsWith("<item") )
         {
             QString uid, newUid, type, label;
 
-            QStringRef name;
-            QVector<QStringRef> props = line.split("\"");
-            QVector<QStringRef> properties;
-            for( QStringRef prop : props )
+            QStringView name;
+            QList<QStringView> props = line.split(u"\"");
+            QList<QStringView> properties;
+            for( QStringView prop : props )
             {
-                if( prop.endsWith("=") )
+                if( prop.endsWith('=') )
                 {
-                    prop = prop.split(" ").last();
+                    prop = prop.split(' ').last();
                     name = prop.mid( 0, prop.length()-1 );
                     continue;
                 }
-                else if( prop.endsWith("/>") ) continue;
+                else if( prop.endsWith(u"/>") ) continue;
                 else{
-                    if     ( name == "itemtype"  ) type  = prop.toString();
-                    else if( name == "CircId"    ) uid   = prop.toString();
-                    else if( name == "objectName") uid   = prop.toString();
-                    else if( name == "label"     ) label = prop.toString();
-                    else if( name == "id"        ) label = prop.toString();
+                    if     ( name.toString() == "itemtype"  ) type  = prop.toString();
+                    else if( name.toString() == "CircId"    ) uid   = prop.toString();
+                    else if( name.toString() == "objectName") uid   = prop.toString();
+                    else if( name.toString() == "label"     ) label = prop.toString();
+                    else if( name.toString() == "id"        ) label = prop.toString();
                     else properties << name << prop ;
             }   }
             newUid = numId+"@"+uid;
@@ -313,7 +313,7 @@ void SubCircuit::loadSubCircuit( QString doc )
                 QStringList pointList;
 
                 QString name = "";
-                for( QStringRef prop : properties )
+                for( QStringView prop : properties )
                 {
                     if( name.isEmpty() ) { name = prop.toString(); continue; }
 
@@ -349,7 +349,7 @@ void SubCircuit::loadSubCircuit( QString doc )
                     comp->setIdLabel( uid ); // Avoid parent Uids in label
 
                     QString propName = "";
-                    for( QStringRef prop : properties )
+                    for( QStringView prop : properties )
                     {
                         if( propName.isEmpty() ) { propName = prop.toString(); continue; }
                         if( !graphProps.contains( propName ) ) comp->setPropStr( propName, prop.toString() );
