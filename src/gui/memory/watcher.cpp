@@ -32,7 +32,7 @@ Watcher::Watcher( QWidget* parent, CoreBase* cpu )
     font.setPixelSize( round(12.5*scale) );
 
     m_valuesLayout = new QBoxLayout( QBoxLayout::TopToBottom, this );
-    m_valuesLayout->setMargin( 0 );
+    // m_valuesLayout->set setMargin( 0 );
     m_valuesLayout->setSpacing( 2 );
     m_valuesLayout->setContentsMargins( 0, 0, 0, 0 );
     m_valuesLayout->addStretch();
