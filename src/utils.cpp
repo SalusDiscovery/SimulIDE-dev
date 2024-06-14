@@ -70,6 +70,16 @@ QString decToBase( int value, int base, int digits )
     return converted;
 }
 
+template <typename T> int sgn(T val) {
+    return (T(0) < val) - (val < T(0));
+}
+
+template <typename T> T tanh( T val)
+{
+    // Calculating tanh this way prevents any +/- Inf values in any terms
+    return(sgn(val)*(1-2/(qExp(-2*qFabs(val))+1)));
+}
+
 //---------------------------------------------------
 
 void MessageBoxNB( QString title, QString message )

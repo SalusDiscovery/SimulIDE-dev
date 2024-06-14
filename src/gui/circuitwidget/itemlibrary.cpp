@@ -51,6 +51,7 @@
 #include "ground.h"
 #include "header.h"
 #include "hd44780.h"
+#include "jfet.h"
 #include "ili9341.h"
 #include "image.h"
 #include "i2cram.h"
@@ -187,6 +188,7 @@ void ItemLibrary::loadItems()
     addItem( Diac::libraryItem() );
     addItem( Triac::libraryItem() );
     addItem( new LibraryItem( QObject::tr("Transistors"), "Active", "transistors.png","Transistors", NULL ) );
+    addItem( Jfet::libraryItem() );
     addItem( Mosfet::libraryItem() );
     addItem( BJT::libraryItem() );
     addItem( new LibraryItem( QObject::tr("Other Active"), "Active", "2to2.png","Other Active", NULL ) );
