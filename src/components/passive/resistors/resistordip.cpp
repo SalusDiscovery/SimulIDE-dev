@@ -48,7 +48,7 @@ ResistorDip::ResistorDip( QString type, QString id )
 
     setLabelPos(-24,-40, 0);
     setValLabelPos( 4,-26, 90 );
-    m_valLabel->setAcceptedMouseButtons( 0 );
+    m_valLabel->setAcceptedMouseButtons( Qt::MouseButtons::fromInt(0) );
 
     QFont font = m_valLabel->font();
     font.setPixelSize( 6 );
@@ -195,7 +195,7 @@ void ResistorDip::remove()
 void ResistorDip::paint( QPainter* p, const QStyleOptionGraphicsItem* o, QWidget* w )
 {
     Component::paint( p, o, w );
-    p->drawRoundRect( QRect(-9,-28, 18, m_size*8 ), 2, 2 );
+    p->drawRoundedRect( QRect(-9,-28, 18, m_size*8 ), 2, 2 );
 
     if( m_pullUp )
     {

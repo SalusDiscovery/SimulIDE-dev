@@ -6,7 +6,9 @@
 #ifndef AUDIOOUT_H
 #define AUDIOOUT_H
 
-#include <QAudioOutput>
+#include <QAudioSink>
+#include <QAudioDevice>
+#include <QAudioFormat>
 
 #include "e-resistor.h"
 #include "component.h"
@@ -44,10 +46,10 @@ class AudioOut : public Component, public eResistor
         void updtProperties();
 
     private:
-        QAudioDeviceInfo m_deviceinfo;
-        QAudioFormat     m_format;  
+        QAudioDevice m_deviceinfo;
+        QAudioFormat     m_format;
         
-        QAudioOutput* m_audioOutput;
+        QAudioSink* m_audioOutput;
         QIODevice*    m_audioBuffer;
         QByteArray    m_dataBuffer;
 

@@ -105,74 +105,74 @@ void CircuitWidget::createActions()
         recentFileActs[i] = new QAction( this );
         recentFileActs[i]->setVisible( false );
         connect( recentFileActs[i], &QAction::triggered,
-                 this,              &CircuitWidget::openRecentFile, Qt::UniqueConnection );
+                 this,              &CircuitWidget::openRecentFile, Qt::QueuedConnection );
     }
 
     newCircAct = new QAction( QIcon(":/new.svg"), tr("New C&ircuit\tCtrl+N"), this);
     newCircAct->setStatusTip( tr("Create a new Circuit"));
     connect( newCircAct, &QAction::triggered,
-                   this, &CircuitWidget::newCircuit, Qt::UniqueConnection );
+                   this, &CircuitWidget::newCircuit, Qt::QueuedConnection );
 
     openCircAct = new QAction( QIcon(":/open.svg"), tr("&Open Circuit\tCtrl+O"), this);
     openCircAct->setStatusTip( tr("Open an existing Circuit"));
     connect( openCircAct, &QAction::triggered,
-                    this, &CircuitWidget::openCirc, Qt::UniqueConnection );
+                    this, &CircuitWidget::openCirc, Qt::QueuedConnection );
 
     saveCircAct = new QAction( QIcon(":/save.svg"), tr("&Save Circuit\tCtrl+S"), this);
     saveCircAct->setStatusTip( tr("Save the Circuit to disk"));
     connect( saveCircAct, &QAction::triggered,
-                    this, QOverload<>::of(&CircuitWidget::saveCirc), Qt::UniqueConnection );
+                    this, QOverload<>::of(&CircuitWidget::saveCirc), Qt::QueuedConnection );
 
     saveCircAsAct = new QAction( QIcon(":/saveas.svg"),tr("Save Circuit &As...\tCtrl+Shift+S"), this);
     saveCircAsAct->setStatusTip( tr("Save the Circuit under a new name"));
     connect( saveCircAsAct, &QAction::triggered,
-                      this, &CircuitWidget::saveCircAs, Qt::UniqueConnection );
+                      this, &CircuitWidget::saveCircAs, Qt::QueuedConnection );
 
     zoomFitAct = new QAction( QIcon(":/zoomfit.svg"),tr("Zoom to fit"), this);
     zoomFitAct->setStatusTip( tr("Zoom Circuit to fit all components"));
     connect( zoomFitAct, &QAction::triggered,
-            CircuitView::self(), &CircuitView::zoomToFit, Qt::UniqueConnection );
+            CircuitView::self(), &CircuitView::zoomToFit, Qt::QueuedConnection );
 
     zoomSelAct = new QAction( QIcon(":/zoomsel.svg"),tr("Zoom to selected"), this);
     zoomSelAct->setStatusTip( tr("Zoom Circuit to fit all selected components"));
     connect( zoomSelAct, &QAction::triggered,
-            CircuitView::self(), &CircuitView::zoomSelected, Qt::UniqueConnection );
+            CircuitView::self(), &CircuitView::zoomSelected, Qt::QueuedConnection );
 
     zoomOneAct = new QAction( QIcon(":/zoomone.svg"),tr("Zoom to Scale 1"), this);
     zoomOneAct->setStatusTip( tr("Zoom Circuit to Scale 1:1"));
     connect( zoomOneAct, &QAction::triggered,
-             CircuitView::self(), &CircuitView::zoomOne, Qt::UniqueConnection );
+             CircuitView::self(), &CircuitView::zoomOne, Qt::QueuedConnection );
 
     powerCircAct = new QAction( QIcon(":/poweroff.png"),tr("Start Simulation"), this);
     powerCircAct->setStatusTip(tr("Start Simulation"));
     powerCircAct->setIconText("Off");
     connect( powerCircAct, &QAction::triggered,
-                     this, &CircuitWidget::powerCirc, Qt::UniqueConnection );
+                     this, &CircuitWidget::powerCirc, Qt::QueuedConnection );
 
     pauseSimAct = new QAction( QIcon(":/pausesim.png"),tr("Pause Simulation"), this);
     pauseSimAct->setStatusTip(tr("Pause Simulation"));
     connect( pauseSimAct, &QAction::triggered,
-             this, &CircuitWidget::pauseCirc, Qt::UniqueConnection );
+             this, &CircuitWidget::pauseCirc, Qt::QueuedConnection );
 
     settAppAct = new QAction( QIcon(":/config.svg"),tr("Settings"), this);
     settAppAct->setStatusTip(tr("Settings"));
     connect( settAppAct, &QAction::triggered,
-                   this, &CircuitWidget::settApp, Qt::UniqueConnection );
+                   this, &CircuitWidget::settApp, Qt::QueuedConnection );
 
     infoAct = new QAction( QIcon(":/help.svg"),tr("SimulIDE Website"), this);
     infoAct->setStatusTip(tr("SimulIDE Website"));
     connect( infoAct, &QAction::triggered,
-                this, &CircuitWidget::openInfo, Qt::UniqueConnection );
+                this, &CircuitWidget::openInfo, Qt::QueuedConnection );
     
     aboutAct = new QAction( QIcon(":/about.svg"),tr("About SimulIDE"), this);
     aboutAct->setStatusTip(tr("About SimulIDE"));
     connect( aboutAct, &QAction::triggered,
-                 this, &CircuitWidget::about, Qt::UniqueConnection );
+                 this, &CircuitWidget::about, Qt::QueuedConnection );
     
     aboutQtAct = new QAction( QIcon(":/about.svg"),tr("About Qt"), this);
     aboutQtAct->setStatusTip(tr("About Qt"));
     connect( aboutQtAct, &QAction::triggered,
-                   qApp, &QApplication::aboutQt, Qt::UniqueConnection );
+                   qApp, &QApplication::aboutQt, Qt::QueuedConnection );
 }
 
 void CircuitWidget::createToolBars()

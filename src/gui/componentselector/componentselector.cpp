@@ -159,15 +159,15 @@ void ComponentSelector::loadComps( QDir compSetDir )
 
         QFile file( compFile );
         if( !file.open(QFile::ReadOnly | QFile::Text) ){
-              qDebug() << "ComponentSelector::loadComps Cannot read file"<< endl << compFile << endl << file.errorString();
+            qDebug() << "ComponentSelector::loadComps Cannot read file"<< Qt::endl << compFile << Qt::endl << file.errorString();
               continue;
         }
         QFileInfo fi( compFile );
         QString compName = fi.baseName();
 
         QXmlStreamReader reader( &file );
-        if( !reader.readNextStartElement() || reader.name() != "libitem" ){
-            qDebug() << "ComponentSelector::loadComps Error parsing file (itemlib):"<< endl << compFile;
+        if( !reader.readNextStartElement() || (reader.name().toString() != "libitem") ){
+            qDebug() << "ComponentSelector::loadComps Error parsing file (itemlib):"<< Qt::endl << compFile;
             file.close();
             continue;
         }
@@ -250,20 +250,20 @@ void ComponentSelector::loadXml( QString setFile, bool convert )
 {
     QFile file( setFile );
     if( !file.open(QFile::ReadOnly | QFile::Text) ){
-          qDebug() << "ComponentSelector::loadXml Cannot read file"<< endl << setFile << endl << file.errorString();
+          qDebug() << "ComponentSelector::loadXml Cannot read file"<< Qt::endl << setFile << Qt::endl << file.errorString();
           return;
     }
     QXmlStreamReader reader( &file );
     if( reader.readNextStartElement() )
     {
-        if( reader.name() != "itemlib" ){
-            qDebug() <<  "ComponentSelector::loadXml Error parsing file (itemlib):"<< endl << setFile;
+        if( reader.name().toString() != "itemlib" ){
+            qDebug() <<  "ComponentSelector::loadXml Error parsing file (itemlib):"<< Qt::endl << setFile;
             file.close();
             return;
         }
         while( reader.readNextStartElement() )
         {
-            if( reader.name() != "itemset" ) { reader.skipCurrentElement(); continue;}
+            if( reader.name().toString() != "itemset" ) { reader.skipCurrentElement(); continue;}
 
             QString icon = "";
             if( reader.attributes().hasAttribute("icon") )
@@ -297,7 +297,7 @@ void ComponentSelector::loadXml( QString setFile, bool convert )
 
             while( reader.readNextStartElement() )
             {
-                if( reader.name() == "item")
+                if( reader.name().toString() == "item")
                 {
                     QString name = reader.attributes().value("name").toString();
 
@@ -452,8 +452,8 @@ void ComponentSelector::addItem( QString caption, QTreeWidgetItem* catItem, QIco
     item->setData( 0, Qt::UserRole, type );
     if( icon.isNull() ) item->setSizeHint( 0, QSize(100, 14*scale) );
     //else                item->setSizeHint( 0, QSize(100, 24) );
-    if( m_customComp ) item->setTextColor( 0, QColor( 80, 90, 110 ) );
-    else               item->setTextColor( 0, QColor( 100, 90, 60 ) );
+    if( m_customComp ) item->setForeground( 0, QColor( 80, 90, 110 ) );
+    else               item->setForeground( 0, QColor( 100, 90, 60 ) );
 
     if( type == "Subcircuit" || type == "MCU" )
          item->setData( 0, Qt::WhatsThisRole, nameTr );
@@ -496,10 +496,10 @@ QTreeWidgetItem* ComponentSelector::addCategory( QString nameTr, QString name, Q
         catItem = new QTreeWidgetItem( this );
         catItem->setIcon( 0, QIcon(":/null-0.png") );
         if( m_customComp ){
-            catItem->setTextColor( 0, QColor( 50, 60, 80 ) );
+            catItem->setForeground( 0, QColor( 50, 60, 80 ) );
             catItem->setBackground( 0, QBrush(QColor(220, 235, 240)) );
         }else{
-            catItem->setTextColor( 0, QColor( 75, 70, 10 ) );
+            catItem->setForeground( 0, QColor( 75, 70, 10 ) );
             catItem->setBackground( 0, QBrush(QColor(220, 240, 235)) );
         }
         catItem->setSizeHint( 0, QSize(100, 30*fontScale) );
@@ -509,10 +509,10 @@ QTreeWidgetItem* ComponentSelector::addCategory( QString nameTr, QString name, Q
         catItem = new QTreeWidgetItem(0);
         catItem->setIcon( 0, QIcon( QPixmap( icon ) ) );
         if( m_customComp ){
-            catItem->setTextColor( 0, QColor( 70, 80, 100 ) );
+            catItem->setForeground( 0, QColor( 70, 80, 100 ) );
             catItem->setBackground( 0, QBrush(QColor( 230, 245, 250)) );
         }else{
-            catItem->setTextColor( 0, QColor( 90, 80, 50 ) );
+            catItem->setForeground( 0, QColor( 90, 80, 50 ) );
             catItem->setBackground( 0, QBrush(QColor( 230, 250, 245)) );
         }
         if( icon.isEmpty() ) catItem->setSizeHint( 0, QSize(100, 16*fontScale) );
@@ -567,7 +567,7 @@ void ComponentSelector::slotContextMenu( const QPoint& point )
 
     QAction* manageComponents = menu.addAction( QIcon(":/fileopen.png"),tr("Manage Components") );
     connect( manageComponents, &QAction::triggered,
-             this, &ComponentSelector::slotManageComponents, Qt::UniqueConnection );
+             this, &ComponentSelector::slotManageComponents, Qt::QueuedConnection );
 
     menu.exec( mapToGlobal(point) );
 }

@@ -8,6 +8,7 @@
 #include <QClipboard>
 #include <QMimeData>
 #include <QSettings>
+#include <QStringRef>
 
 #include "circuit.h"
 #include "simulator.h"
@@ -73,10 +74,10 @@ Circuit::Circuit( qreal x, qreal y, qreal width, qreal height, CircuitView*  par
     m_filePath   = "";//qApp->applicationDirPath()+"/new.simu"; // AppImage tries to write in read olny filesystem
 
     connect( &m_bckpTimer, &QTimer::timeout,
-                     this,&Circuit::saveBackup, Qt::UniqueConnection );
+                     this,&Circuit::saveBackup, Qt::QueuedConnection );
 
-    qDebug() << endl << "-------------------------------------------------";
-    qDebug() << "                   NEW CIRCUIT                   "<<endl;
+    qDebug() << Qt::endl << "-------------------------------------------------";
+    qDebug() << "                   NEW CIRCUIT                   "<<Qt::endl;
 }
 
 Circuit::~Circuit()
@@ -186,32 +187,32 @@ void Circuit::loadStrDoc( QString &doc )
     m_busy  = true;
     if( !m_undo && !m_redo ) m_LdPinMap.clear();
 
-    QVector<QStringRef> docLines = doc.splitRef("\n");
-    for( QStringRef line : docLines )
+    QList<QStringView> docLines = QStringView(doc).split(u"\n");
+    for( QStringView line : docLines )
     {
-        if( line.startsWith("<item") )
+        if( line.toString().startsWith("<item") )
         {
             QString uid, newUid, type, label, newNum;
 
-            QStringRef name;
-            QVector<QStringRef> props = line.split("\"");
-            QHash<QStringRef, QStringRef> properties;
-            for( QStringRef prop : props )
+            QStringView name;
+            QList<QStringView> props = line.split(u"\"");
+            QHash<QStringView, QStringView> properties;
+            for( QStringView prop : props )
             {
-                if( prop.size() > 1 && prop.endsWith("=") )
+                if( prop.size() > 1 && prop.endsWith('=') )
                 {
-                    prop = prop.split(" ").last();
-                    name = prop.mid( 0, prop.length()-1 );
+                    prop = prop.split(u' ').last();
+                    name = prop.sliced( 0, prop.length()-1 );
                     continue;
                 }
-                else if( prop.endsWith(">") ) continue;
+                else if( prop.endsWith('>') ) continue;
                 else{
-                    if     ( name == "itemtype"  ) type  = prop.toString();
-                    else if( name == "uid"       ) uid   = prop.toString();
-                    else if( name == "CircId"    ) uid   = prop.toString();
-                    else if( name == "objectName") uid   = prop.toString();
-                    else if( name == "label"     ) label = prop.toString();
-                    else if( name == "id"        ) label = prop.toString();
+                    if     ( name.toString() == "itemtype"  ) type  = prop.toString();
+                    else if( name.toString() == "uid"       ) uid   = prop.toString();
+                    else if( name.toString() == "CircId"    ) uid   = prop.toString();
+                    else if( name.toString() == "objectName") uid   = prop.toString();
+                    else if( name.toString() == "label"     ) label = prop.toString();
+                    else if( name.toString() == "id"        ) label = prop.toString();
                     else properties[name] = prop ;
             }   }
             if( type.isEmpty() ) { qDebug() << "ERROR: Component with no type:"<<label<< uid; continue;}
@@ -236,8 +237,8 @@ void Circuit::loadStrDoc( QString &doc )
                 QStringList pointList;
 
                 QString name;
-                QStringRef val;
-                for( QStringRef prop : properties.keys() )
+                QStringView val;
+                for( QStringView prop : properties.keys() )
                 {
                     name = prop.toString();
                     val  = properties.value( prop );
@@ -304,8 +305,8 @@ void Circuit::loadStrDoc( QString &doc )
                     joint->setSelected( true );
                 }
                 QString name;
-                QStringRef val;
-                for( QStringRef prop : properties.keys() )
+                QStringView val;
+                for( QStringView prop : properties.keys() )
                 {
                     name = prop.toString();
                     val  = properties.value( prop );
@@ -373,7 +374,7 @@ void Circuit::loadStrDoc( QString &doc )
                     }
                     QString propName;
                     QString value;
-                    for( QStringRef prop : properties.keys() ) // Properties not recognized (old versions)
+                    for( QStringView prop : properties.keys() ) // Properties not recognized (old versions)
                     {
                         propName = prop.toString();
                         value    = properties.value( prop ).toString();
@@ -402,7 +403,7 @@ void Circuit::loadStrDoc( QString &doc )
                 else qDebug() << " ERROR Creating Component: "<< type << uid;
             }
         }
-        else if( line.contains("<mainCompProps") )
+        else if( line.toString().contains("<mainCompProps") )
         {
             if( !lastComp ) continue;
             SubCircuit* subci = static_cast<SubCircuit*>(lastComp);
@@ -410,16 +411,16 @@ void Circuit::loadStrDoc( QString &doc )
             if( !mComp ) continue;
 
             QString propName = "";
-            QVector<QStringRef> props = line.split("\"");
-            for( QStringRef prop : props )
+            QVector<QStringView> props = line.split(u"\"");
+            for( QStringView prop : props )
             {
-                if( prop.endsWith("=") )
+                if( prop.endsWith(u"=") )
                 {
-                    prop = prop.split(" ").last();
+                    prop = prop.split(u" ").last();
                     propName = prop.toString().mid( 0, prop.length()-1 );
                     continue;
                 }
-                else if( prop.endsWith("/>") ) continue;
+                else if( prop.endsWith(u"/>") ) continue;
                 if( propName == "MainCompId")  // If more than 1 mainComp then get Component
                 {
                     QString compName = prop.toString();
@@ -431,38 +432,38 @@ void Circuit::loadStrDoc( QString &doc )
                 propName = "";
             }
         }
-        else if( (line.startsWith("<circuit") || line.startsWith("<libitem") ) && !m_pasting )
+        else if( (line.toString().startsWith("<circuit") || line.toString().startsWith("<libitem") ) && !m_pasting )
         {
             line = line.mid( 9, line.length()-11 );
-            QStringRef name;
+            QStringView name;
 
-            QVector<QStringRef> props = line.split("\"");
+            QVector<QStringView> props = line.split(u"\"");
             QHash<QStringRef, QStringRef> properties;
-            for( QStringRef prop : props )
+            for( QStringView prop : props )
             {
                 //if( prop.size() < 2 ) continue;
-                if( prop.endsWith("=") )
+                if( prop.endsWith('=') )
                 {
-                    prop = prop.split(" ").last();
+                    prop = prop.split(' ').last();
                     name = prop.mid( 0, prop.length()-1 );
                     continue;
                 }
                 else if( prop.isEmpty() ) continue;
                 else{
-                    if     ( name == "stepSize") m_simulator->setStepSize( prop.toULongLong() );
-                    else if( name == "stepsPS" ) m_simulator->setStepsPerSec(prop.toULongLong() );
-                    else if( name == "NLsteps" ) m_simulator->setMaxNlSteps( prop.toUInt() );
-                    else if( name == "reaStep" ) m_simulator->setreactStep( prop.toULongLong() );
-                    else if( name == "animate" ) setAnimate( prop.toInt() );
-                    else if( name == "rev"     ) m_circRev  = prop.toInt();
-                    else if( name == "category") m_category = prop.toString();
-                    else if( name == "compname") m_compName = prop.toString();
-                    else if( name == "compinfo") m_compInfo = prop.toString();
-                    else if( name == "icondata") m_iconData = prop.toString();
-                    else if( name == "itemtype") m_itemType = prop.toString();
+                    if     ( name.toString() == "stepSize") m_simulator->setStepSize( prop.toULongLong() );
+                    else if( name.toString() == "stepsPS" ) m_simulator->setStepsPerSec(prop.toULongLong() );
+                    else if( name.toString() == "NLsteps" ) m_simulator->setMaxNlSteps( prop.toUInt() );
+                    else if( name.toString() == "reaStep" ) m_simulator->setreactStep( prop.toULongLong() );
+                    else if( name.toString() == "animate" ) setAnimate( prop.toInt() );
+                    else if( name.toString() == "rev"     ) m_circRev  = prop.toInt();
+                    else if( name.toString() == "category") m_category = prop.toString();
+                    else if( name.toString() == "compname") m_compName = prop.toString();
+                    else if( name.toString() == "compinfo") m_compInfo = prop.toString();
+                    else if( name.toString() == "icondata") m_iconData = prop.toString();
+                    else if( name.toString() == "itemtype") m_itemType = prop.toString();
             }   }
         }
-        else if( line.startsWith("</circuit") ) break;
+        else if( line.toString().startsWith("</circuit") ) break;
     }
     if( m_pasting )
     {
@@ -583,7 +584,7 @@ bool Circuit::saveString( QString &fileName, QString doc )
         return false;
     }
     QTextStream out( &file );
-    out.setCodec("UTF-8");
+    out.setEncoding(QStringConverter::Utf8);
     out << doc;
     file.close();
 
@@ -773,7 +774,7 @@ void Circuit::saveChanges()
     m_cicuitBatch = 0;  // Ends all CicuitChanges
     deleteRemoved();    // Delete Removed Components;
 
-    /// qDebug() << "Circuit::saveChanges ---------------------------"<<m_undoIndex<<m_undoStack.size()<<endl;
+    /// qDebug() << "Circuit::saveChanges ---------------------------"<<m_undoIndex<<m_undoStack.size()<<Qt::endl;
 }
 
 void Circuit::deleteRemoved()
@@ -815,7 +816,7 @@ void Circuit::cancelUndoStep()
         m_undoStack.takeLast();
     }
     else m_cicuitBatch = 0;
-    /// qDebug() << "Circuit::cancelUndoStep--------------------------------"<<endl;
+    /// qDebug() << "Circuit::cancelUndoStep--------------------------------"<<Qt::endl;
 }
 
 void Circuit::beginUndoStep() // Save current state
@@ -1102,7 +1103,7 @@ void Circuit::mousePressEvent( QGraphicsSceneMouseEvent* event )
         if( m_conStarted ) event->accept();
         else               QGraphicsScene::mousePressEvent( event );
     }
-    else if( event->button() == Qt::MidButton )
+    else if( event->button() == Qt::MiddleButton )
         QGraphicsScene::mousePressEvent( event );
 }
 

@@ -4,6 +4,7 @@
  ***( see copyright.txt file at root folder )*******************************/
 
 #include <QtGui>
+#include <QRegExp>
 
 #include "highlighter.h"
 #include "mainwindow.h"

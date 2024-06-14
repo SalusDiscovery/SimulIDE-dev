@@ -18,7 +18,7 @@ Label::Label()
     setCursor( Qt::OpenHandCursor );
 
     connect( document(), &QTextDocument::contentsChange,
-             this,       &Label::updateGeometry, Qt::UniqueConnection );
+             this,       &Label::updateGeometry, Qt::QueuedConnection );
 }
 Label::~Label() { }
 
@@ -69,15 +69,15 @@ void Label::contextMenuEvent( QGraphicsSceneContextMenuEvent* event )
 
         QAction* rotateCWAction = menu.addAction(QIcon(":/rotatecw.svg"),"Rotate CW");
         connect(rotateCWAction, &QAction::triggered,
-                          this, &Label::rotateCW, Qt::UniqueConnection );
+                          this, &Label::rotateCW, Qt::QueuedConnection );
 
         QAction* rotateCCWAction = menu.addAction(QIcon(":/rotateccw.svg"),"Rotate CCW");
         connect(rotateCCWAction, &QAction::triggered,
-                           this, &Label::rotateCCW, Qt::UniqueConnection );
+                           this, &Label::rotateCCW, Qt::QueuedConnection );
 
         QAction* rotate180Action = menu.addAction(QIcon(":/rotate180.svg"),"Rotate 180º");
         connect(rotate180Action, &QAction::triggered,
-                           this, &Label::rotate180, Qt::UniqueConnection );
+                           this, &Label::rotate180, Qt::QueuedConnection );
 
         menu.exec(event->screenPos());
     }

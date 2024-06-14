@@ -37,7 +37,7 @@ Chip::Chip( QString type, QString id )
 
     QFont f;
     f.setFamily("Ubuntu Mono");
-    f.setWeight( 65 );
+    f.setWeight( QFont::DemiBold );
 #ifdef Q_OS_UNIX
     f.setLetterSpacing( QFont::PercentageSpacing, 120 );
 #else
@@ -49,7 +49,7 @@ Chip::Chip( QString type, QString id )
 
     m_label.setFont( f );
     m_label.setDefaultTextColor( QColor( 135, 135, 120 ) );
-    m_label.setAcceptedMouseButtons( 0 );
+    m_label.setAcceptedMouseButtons( Qt::MouseButtons::fromInt(0) );
     m_label.setRotation(-90 );
     m_label.setVisible( true );
     

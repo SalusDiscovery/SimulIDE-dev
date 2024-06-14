@@ -147,9 +147,9 @@ void DcMotor::paint( QPainter* p, const QStyleOptionGraphicsItem* option, QWidge
     p->drawEllipse(-32,-32, 64, 64 );
 
     p->setBrush( QColor(255, 0, 0) );
-    p->drawRoundRect(-36,-4, 8, 8, 4, 4 );
+    p->drawRoundedRect(-36,-4, 8, 8, 4, 4 );
     p->setBrush( QColor(0, 0, 0) );
-    p->drawRoundRect( 28,-4, 8, 8, 4, 4 );
+    p->drawRoundedRect( 28,-4, 8, 8, 4, 4 );
 
     p->setPen( QColor(0, 0, 0) );
     p->setBrush( QColor(255, 255, 255) );

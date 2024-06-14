@@ -5,6 +5,8 @@ RELEASE = ""
 TEMPLATE = app
 TARGET = simulide
 
+QT += core
+QT += core5compat
 QT += svg
 QT += xml
 QT += widgets

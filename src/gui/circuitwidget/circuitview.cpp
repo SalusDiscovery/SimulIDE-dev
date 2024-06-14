@@ -44,7 +44,7 @@ CircuitView::CircuitView( QWidget *parent )
     //setViewportUpdateMode( QGraphicsView::FullViewportUpdate );
     //setCacheMode( CacheBackground );
     //setRenderHint( QPainter::Antialiasing );
-    setRenderHints( QPainter::HighQualityAntialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform);
+    setRenderHints( QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform);
     setTransformationAnchor( AnchorUnderMouse );
     setResizeAnchor( AnchorUnderMouse );
     setDragMode( RubberBandDrag );
@@ -61,7 +61,7 @@ void CircuitView::clear()
     }
     m_circuit = new Circuit( -1600, -1200, 3200, 2400, this );
     setScene( m_circuit );
-    resetMatrix();
+    // resetMatrix();
     m_scale = 1;
     m_enterItem = NULL;
     centerOn( 0, 0 );
@@ -82,7 +82,7 @@ void CircuitView::setShowScroll( bool show )
 
 void CircuitView::wheelEvent( QWheelEvent* event )
 {
-    qreal scaleFactor = pow( 2.0, event->delta() / 700.0);
+    qreal scaleFactor = pow( 2.0, event->angleDelta().y() / 700.0);
     scale( scaleFactor, scaleFactor );
     m_scale *= scaleFactor;
 }
@@ -146,7 +146,7 @@ void CircuitView::mousePressEvent( QMouseEvent* event )
             m_waitForDragStart = true;
         }
     }
-    else if( event->button() == Qt::MidButton )
+    else if( event->button() == Qt::MiddleButton )
     {
         event->accept();
         setDragMode( QGraphicsView::ScrollHandDrag );
@@ -181,7 +181,7 @@ void CircuitView::mouseMoveEvent( QMouseEvent* event )
 
 void CircuitView::mouseReleaseEvent( QMouseEvent* event )
 {
-    if( event->button() == Qt::MidButton )
+    if( event->button() == Qt::MiddleButton )
     {
         event->accept();
         QMouseEvent eve( QEvent::MouseButtonRelease, event->pos(),
@@ -221,31 +221,31 @@ void CircuitView::contextMenuEvent( QContextMenuEvent* event )
 
         QAction* pasteAction = menu.addAction(QIcon(":/paste.svg"),tr("Paste")+"\tCtrl+V");
         connect( pasteAction, &QAction::triggered,
-                        this, &CircuitView::slotPaste, Qt::UniqueConnection );
+                        this, &CircuitView::slotPaste, Qt::QueuedConnection );
 
         QAction* undoAction = menu.addAction(QIcon(":/undo.svg"),tr("Undo")+"\tCtrl+Z");
         connect( undoAction, &QAction::triggered,
-                  m_circuit, &Circuit::undo, Qt::UniqueConnection );
+                  m_circuit, &Circuit::undo, Qt::QueuedConnection );
 
         QAction* redoAction = menu.addAction(QIcon(":/redo.svg"),tr("Redo")+"\tCtrl+Y");
         connect( redoAction, &QAction::triggered,
-                  m_circuit, &Circuit::redo, Qt::UniqueConnection );
+                  m_circuit, &Circuit::redo, Qt::QueuedConnection );
 
         menu.addSeparator();
 
         QAction* importCircAct = menu.addAction(QIcon(":/open.svg"), tr("Import Circuit") );
         connect(importCircAct, &QAction::triggered,
-                         this, &CircuitView::importCirc, Qt::UniqueConnection );
+                         this, &CircuitView::importCirc, Qt::QueuedConnection );
 
         QAction* saveImgAct = menu.addAction( QIcon(":/saveimage.svg"), tr("Save Circuit as Image") );
         connect( saveImgAct, &QAction::triggered,
-                       this, &CircuitView::saveImage, Qt::UniqueConnection );
+                       this, &CircuitView::saveImage, Qt::QueuedConnection );
 
         //if( !m_circuit->getFilePath().isEmpty() && !m_circuit->isComp() )
         {
             QAction* createCompAct = menu.addAction(QIcon(":/subc.png"), tr("Create Component") );
             connect( createCompAct, &QAction::triggered,
-                       m_circuit, &Circuit::createComp, Qt::UniqueConnection );
+                       m_circuit, &Circuit::createComp, Qt::QueuedConnection );
         }
 
         /*QAction* createBomAct = menu.addAction(QIcon(":/savecirc.png"), tr("Bill of Materials") );
@@ -272,7 +272,7 @@ void CircuitView::zoomSelected()
 
 void CircuitView::zoomOne()
 {
-    resetMatrix();
+    // resetMatrix();
     m_scale = 1;
 }
 

@@ -73,8 +73,8 @@ RamTable::RamTable( QWidget* parent, eMcu* processor ,bool cpuMonitor )
             if( col != 1 ){
                 it->setFlags( Qt::ItemIsEnabled );
                 it->setText("---");
-                if( col == 3 ) it->setTextColor( QColor( 0x904020 ) );
-                else           it->setTextColor( QColor( numberColor ) );
+                if( col == 3 ) it->setForeground( QColor( 0x904020 ) );
+                else           it->setForeground( QColor( numberColor ) );
             }
             if( col == 0  || col == 3 ) it->setFont( fontS );
             else           it->setFont( font );
@@ -114,10 +114,10 @@ RamTable::RamTable( QWidget* parent, eMcu* processor ,bool cpuMonitor )
              this,      SLOT(RegDoubleClick(QModelIndex)));
 
     connect( this, SIGNAL(customContextMenuRequested(const QPoint&)),
-             this, SLOT  (slotContextMenu(const QPoint&)), Qt::UniqueConnection);
+             this, SLOT  (slotContextMenu(const QPoint&)), Qt::QueuedConnection);
 
     connect( table, SIGNAL(itemChanged(QTableWidgetItem*)  ),
-             this, SLOT(addToWatch(QTableWidgetItem*)), Qt::UniqueConnection );
+             this, SLOT(addToWatch(QTableWidgetItem*)), Qt::QueuedConnection );
 }
 
 void RamTable::RegDoubleClick( const QModelIndex& index )
@@ -143,18 +143,18 @@ void RamTable::slotContextMenu( const QPoint& point )
     QMenu menu;
 
     QAction *clearSelected = menu.addAction( QIcon(":/remove.svg"),tr("Clear Selected") );
-    connect( clearSelected, SIGNAL(triggered()), this, SLOT(clearSelected()), Qt::UniqueConnection );
+    connect( clearSelected, SIGNAL(triggered()), this, SLOT(clearSelected()), Qt::QueuedConnection );
 
     QAction *clearTable = menu.addAction( QIcon(":/remove.svg"),tr("Clear Table") );
-    connect( clearTable, SIGNAL(triggered()), this, SLOT(clearTable()), Qt::UniqueConnection );
+    connect( clearTable, SIGNAL(triggered()), this, SLOT(clearTable()), Qt::QueuedConnection );
 
     menu.addSeparator();
 
     QAction *loadVarSet = menu.addAction( QIcon(":/open.png"),tr("Load VarSet") );
-    connect( loadVarSet, SIGNAL(triggered()), this, SLOT(loadVarSet()), Qt::UniqueConnection );
+    connect( loadVarSet, SIGNAL(triggered()), this, SLOT(loadVarSet()), Qt::QueuedConnection );
 
     QAction *saveVarSet = menu.addAction( QIcon(":/save.png"),tr("Save VarSet") );
-    connect( saveVarSet, SIGNAL(triggered()), this, SLOT(saveVarSet()), Qt::UniqueConnection );
+    connect( saveVarSet, SIGNAL(triggered()), this, SLOT(saveVarSet()), Qt::QueuedConnection );
 
     menu.exec( mapToGlobal(point) );
 }
@@ -237,7 +237,7 @@ void RamTable::saveVarSet()
         file.flush();
 
         QTextStream out(&file);
-        out.setCodec( "UTF-8" );
+        out.setEncoding(QStringConverter::Utf8);
         QApplication::setOverrideCursor(Qt::WaitCursor);
 
         for( int row=0; row<m_numRegs; row++ )
@@ -416,7 +416,7 @@ void RamTable::updateValues()
                     for( int i=address; i<=address+value; i++ )
                     {
                         QString str = "";
-                        const QChar cha = m_processor->getRamValue( i );
+                        const QChar cha = QChar(m_processor->getRamValue( i ));
                         str.setRawData( &cha, 1 );
                         strVal += str; //QByteArray::fromHex( getRamValue( i ) );
                     }

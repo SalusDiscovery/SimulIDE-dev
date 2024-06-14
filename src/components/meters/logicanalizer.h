@@ -7,6 +7,7 @@
 #define LANALIZER_H
 
 #include "plotbase.h"
+#include <QFile>
 
 class LibraryItem;
 class LaChannel;

@@ -14,6 +14,7 @@
 #include <qpoint.h>
 #include <QPointF>
 #include <cmath>
+#include <QtMath>
 
 #include "mainwindow.h"
 #include "utils.h"
@@ -180,12 +181,12 @@ QString fileToString( QString fileName, QString caller )
     QFile file( fileName );
     if (!file.open( QFile::ReadOnly | QFile::Text) )
     {
-        qDebug() << caller << "Error: Cannot read file"<<endl<<fileName<<endl<<file.errorString();
+        qDebug() << caller << "Error: Cannot read file"<<Qt::endl<<fileName<<Qt::endl<<file.errorString();
         //MessageBoxNB( caller, "Cannot read file "+fileName+"\n"+file.errorString() );
         return "";
     }
     QTextStream in(&file);
-    in.setCodec("UTF-8");
+    in.setEncoding(QStringConverter::Utf8); //.setCodec("UTF-8");
     QString text = in.readAll();
     file.close();
 
@@ -204,7 +205,7 @@ QByteArray fileToByteArray( QString fileName, QString caller )
     QFile file(fileName);
     if( !file.open( QFile::ReadOnly ) )
     {
-        qDebug() << caller << "Error: Cannot read file"<<endl<<fileName<<endl<<file.errorString();
+        qDebug() << caller << "Error: Cannot read file"<<Qt::endl<<fileName<<Qt::endl<<file.errorString();
         //MessageBoxNB( caller, "Cannot read file "+fileName+"\n"+file.errorString() );
         return ba;
     }

@@ -3,6 +3,8 @@
  *                                                                         *
  ***( see copyright.txt file at root folder )*******************************/
 
+#include <QRegExp>
+
 #include "numval.h"
 #include "component.h"
 #include "propdialog.h"
@@ -30,7 +32,7 @@ void NumVal::setup( bool isComp )
 
     //QFont font = valueBox->font();
     QFontMetrics fm( valLabel->font() );
-    float scale = fm.width(" ")/2;
+    float scale = fm.horizontalAdvance(" ")/2;
     //font.setPixelSize( 11.0*scale );
     //unitBox->setFont( font );
     //valueBox->setFont( font );

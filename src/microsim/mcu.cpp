@@ -225,7 +225,7 @@ Mcu::Mcu( QString type, QString id )
     }
 
     if( m_packageList.isEmpty() ){
-        qDebug() << "Mcu::Mcu: No Packages found for"<<m_device<<endl;
+        qDebug() << "Mcu::Mcu: No Packages found for"<<m_device<<Qt::endl;
         m_error = 1;
         return;
     }
@@ -238,7 +238,7 @@ Mcu::Mcu( QString type, QString id )
 
     Simulator::self()->addToUpdateList( this );
 
-    qDebug() << "       "<<id<< "Initialized"<<endl;
+    qDebug() << "       "<<id<< "Initialized"<<Qt::endl;
 }
 
 void Mcu::setup( QString type )
@@ -613,7 +613,7 @@ void Mcu::contextMenu( QGraphicsSceneContextMenuEvent* event, QMenu* menu )
             QObject::connect( openSerMonAct, &QAction::triggered, sm, QOverload<>::of(&QSignalMapper::map) );
             sm->setMapping( openSerMonAct, i+1 );
         }
-        QObject::connect( sm, QOverload<int>::of(&QSignalMapper::mapped), [=](int n){ slotOpenTerm(n);} );
+        QObject::connect( sm, QOverload<int>::of(&QSignalMapper::mappedInt), [=](int n){ slotOpenTerm(n);} );
     }
     menu->addSeparator();
     Component::contextMenu( event, menu );

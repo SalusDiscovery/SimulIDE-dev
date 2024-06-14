@@ -6,6 +6,7 @@
 #include <QApplication>
 #include <QSettings>
 //#include <QDebug>
+#include <QRegularExpression>
 
 #include "inodebugger.h"
 #include "codeeditor.h"
@@ -192,7 +193,7 @@ void InoDebugger::setToolPath( QString path )
             //qDebug() << config;
 
             QStringList configLines = config.split( "\n" );
-            QRegExp rx( "^  data: .*$" );
+            QRegularExpression rx( "^  data: .*$" );
             int idx = configLines.indexOf(rx);
             if( idx != -1 )
             {

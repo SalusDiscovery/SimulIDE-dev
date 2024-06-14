@@ -216,10 +216,10 @@ void Stepper::paint( QPainter* p, const QStyleOptionGraphicsItem* option, QWidge
     Component::paint( p, option, widget );
 
     //p->setBrush( QColor(250, 210, 230) );
-    if( !m_hidden ) p->drawRoundRect(-64,-40, 25, 80 );
+    if( !m_hidden ) p->drawRoundedRect(-64,-40, 25, 80, 4, 4 );
 
-    p->setBrush( QColor(50, 70, 100) ); 
-    p->drawRoundRect(-48,-48, 96, 96 );
+    p->setBrush( QColor(50, 70, 100) );
+    p->drawRoundedRect(-48,-48, 96, 96, 4, 4 );
 
     p->setPen( QColor(0, 0, 0) );
     p->setBrush( QColor(255, 255, 255) );

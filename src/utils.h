@@ -8,10 +8,11 @@
 
 #include <QtMath>
 #include <QList>
+#include <QStringList>
 
 class QDomDocument;
 class QByteArray;
-class QStringList;
+// class QStringList;
 class QString;
 class QPointF;
 class QPoint;
@@ -50,6 +51,9 @@ QString multToValStr( double value, QString mult );
 QString val2hex( int d );
 QString toDigit( int d );
 QString decToBase( int value, int base, int digits );
+
+template <typename T> int sgn(T val);
+template <typename T> T tanh( T val);
 
 //---------------------------------------------------
 

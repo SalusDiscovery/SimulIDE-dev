@@ -29,7 +29,7 @@ void ColorVal::setup( bool )
     //valueBox->setFont( font );
 
     QFontMetrics fm( colorW->font() );
-    float scale = fm.width(" ")/2;
+    float scale = fm.horizontalAdvance(" ")/2;
     colorW->setFixedWidth( 170.0*scale );
 
     valLabel->setText( m_property->capt() );

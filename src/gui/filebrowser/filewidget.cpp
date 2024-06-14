@@ -59,17 +59,17 @@ FileWidget::FileWidget( QWidget* parent )
     addEntry("User Data",  MainWindow::self()->userPath() );
     addEntry("Settings",   settingsDir );
 
-    connect( m_bookmarks, SIGNAL( itemClicked( QListWidgetItem* )), 
-             this,        SLOT(   itemClicked( QListWidgetItem* )), Qt::UniqueConnection);
+    connect( m_bookmarks, SIGNAL( itemClicked( QListWidgetItem* )),
+             this,        SLOT(   itemClicked( QListWidgetItem* )), Qt::QueuedConnection);
              
     //connect( m_searchFiles, SIGNAL( editingFinished() ),
-    //         this,          SLOT( searchChanged() ), Qt::UniqueConnection);
+    //         this,          SLOT( searchChanged() ), Qt::QueuedConnection);
 
     connect( m_cdUpButton,  SIGNAL(released()),
-             m_fileBrowser, SLOT(  cdUp()), Qt::UniqueConnection);
+             m_fileBrowser, SLOT(  cdUp()), Qt::QueuedConnection);
              
     connect( m_path, SIGNAL( editingFinished() ),
-             this,   SLOT(  pathChanged()), Qt::UniqueConnection);
+             this,   SLOT(  pathChanged()), Qt::QueuedConnection);
              
     int size = settings->beginReadArray("bookmarks");
     
@@ -108,7 +108,7 @@ void FileWidget::addEntry( QString name, QString path )
     
     QFont font;
     font.setPixelSize( 11*MainWindow::self()->fontScale() );
-    font.setWeight(70);
+    font.setWeight(QFont::DemiBold);
     item->setFont( font );
     item->setIcon( QIcon(":/open.png") );
 }

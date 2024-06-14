@@ -74,7 +74,7 @@ void EditorWidget::setTabSize( int size )
     m_tabSize = size;
     MainWindow::self()->settings()->setValue( "Editor_tab_size", QString::number(m_tabSize) );
 
-    for( CodeEditor* ce : getCodeEditors() ) ce->setTabStopWidth( calcTabstopWidth() );
+    for( CodeEditor* ce : getCodeEditors() ) ce->setTabStopDistance( calcTabstopWidth() );
 }
 
 void EditorWidget::setShowSpaces( bool show )
@@ -147,7 +147,7 @@ void EditorWidget::addDocument(  QString file, bool main  )
 {
     CodeEditor* ce = new CodeEditor( this, &m_outPane );
     ce->setVerticalScrollBar( new scrollWidget( ce, Qt::Vertical ) );
-    ce->setTabStopWidth( calcTabstopWidth() );
+    ce->setTabStopDistance( calcTabstopWidth() );
     docShowSpaces( ce );
 
     QString tabString = file.isEmpty() ? tr("NEW") : getFileName(file);
@@ -158,7 +158,7 @@ void EditorWidget::addDocument(  QString file, bool main  )
         ce->setFile( file );
     }
     connect( ce->document(), &QTextDocument::contentsChanged,
-                       this, &EditorWidget::documentWasModified, Qt::UniqueConnection);
+                       this, &EditorWidget::documentWasModified, Qt::QueuedConnection);
 
     m_fileList[file] = ce;
     if( main ){
@@ -334,7 +334,7 @@ bool EditorWidget::saveFile( QString fileName )
     QApplication::setOverrideCursor( Qt::WaitCursor );
 
     QTextStream out( &file );
-    out.setCodec("UTF-8");
+    out.setEncoding(QStringConverter::Utf8);
 
     CodeEditor* ce = getCodeEditor();
     out << ce->toPlainText();
@@ -491,7 +491,7 @@ void EditorWidget::readSettings()
     m_tabSize = 4;
 
     m_font.setFamily("Ubuntu Mono");
-    m_font.setWeight( 50 );
+    m_font.setWeight( QFont::Medium );
     m_font.setPixelSize( m_fontSize );
 
     if( settings->contains( "Editor_show_spaces" ) )
@@ -607,9 +607,9 @@ void EditorWidget::createWidgets()
     splitter0->setSizes( {300, 100} );
 
     connect( m_docWidget, SIGNAL( tabCloseRequested(int)),
-             this,        SLOT(   closeTab(int)), Qt::UniqueConnection);
+             this,        SLOT(   closeTab(int)), Qt::QueuedConnection);
 
-    connect( m_docWidget, SIGNAL(currentChanged(int)), this, SLOT(updateDoc(int)), Qt::UniqueConnection);
+    connect( m_docWidget, SIGNAL(currentChanged(int)), this, SLOT(updateDoc(int)), Qt::QueuedConnection);
 
     m_findRepDialog = new FindReplace( this );
     m_findRepDialog->setModal( false );
@@ -619,16 +619,16 @@ void EditorWidget::createActions()
 {
     confEditAct = new QAction(QIcon(":/blank.png"), tr("Editor Settings"), this);
     confEditAct->setStatusTip(tr("Editor Settings"));
-    connect( confEditAct, SIGNAL(triggered()), this, SLOT(confEditor()), Qt::UniqueConnection);
+    connect( confEditAct, SIGNAL(triggered()), this, SLOT(confEditor()), Qt::QueuedConnection);
 
     confFileAct = new QAction(QIcon(":/blank.png"), tr("File Settings"), this);
     confFileAct->setStatusTip(tr("Compiler Settings"));
-    connect( confFileAct, SIGNAL(triggered()), this, SLOT(confFile()), Qt::UniqueConnection);
+    connect( confFileAct, SIGNAL(triggered()), this, SLOT(confFile()), Qt::QueuedConnection);
     confFileAct->setVisible( false );
 
     confCompAct = new QAction(QIcon(":/blank.png"), tr("Compiler Settings"), this);
     confCompAct->setStatusTip(tr("Compiler Settings"));
-    connect( confCompAct, SIGNAL(triggered()), this, SLOT(confCompiler()), Qt::UniqueConnection);
+    connect( confCompAct, SIGNAL(triggered()), this, SLOT(confCompiler()), Qt::QueuedConnection);
     confCompAct->setVisible( false );
 
     for( int i=0; i<MaxRecentFiles; i++ )
@@ -636,46 +636,46 @@ void EditorWidget::createActions()
         recentFileActs[i] = new QAction( this );
         recentFileActs[i]->setVisible( false );
         connect( recentFileActs[i], SIGNAL( triggered() ),
-                 this,              SLOT( openRecentFile() ), Qt::UniqueConnection);
+                 this,              SLOT( openRecentFile() ), Qt::QueuedConnection);
     }
 
     newAct = new QAction(QIcon(":/new.svg"), tr("&New\tCtrl+N"), this);
     newAct->setStatusTip(tr("Create a new file"));
-    connect( newAct, SIGNAL(triggered()), this, SLOT(newFile()), Qt::UniqueConnection);
+    connect( newAct, SIGNAL(triggered()), this, SLOT(newFile()), Qt::QueuedConnection);
 
     openAct = new QAction(QIcon(":/open.svg"), tr("&Open...\tCtrl+O"), this);
     openAct->setStatusTip(tr("Open an existing file"));
-    connect(openAct, SIGNAL(triggered()), this, SLOT(open()), Qt::UniqueConnection);
+    connect(openAct, SIGNAL(triggered()), this, SLOT(open()), Qt::QueuedConnection);
 
     saveAct = new QAction(QIcon(":/save.svg"), tr("&Save\tCtrl+S"), this);
     saveAct->setStatusTip(tr("Save the document to disk"));
     saveAct->setEnabled(false);
-    connect(saveAct, SIGNAL(triggered()), this, SLOT(save()), Qt::UniqueConnection);
+    connect(saveAct, SIGNAL(triggered()), this, SLOT(save()), Qt::QueuedConnection);
 
     saveAsAct = new QAction(QIcon(":/saveas.svg"),tr("Save &As...\tCtrl+Shift+S"), this);
     saveAsAct->setStatusTip(tr("Save the document under a new name"));
     saveAsAct->setEnabled(false);
-    connect(saveAsAct, SIGNAL(triggered()), this, SLOT(saveAs()), Qt::UniqueConnection);
+    connect(saveAsAct, SIGNAL(triggered()), this, SLOT(saveAs()), Qt::QueuedConnection);
 
     cutAct = new QAction(QIcon(":/cut.svg"), tr("Cu&t\tCtrl+X"), this);
     cutAct->setStatusTip(tr("Cut the current selection's contents to the clipboard"));
     cutAct->setEnabled(false);
-    connect(cutAct, SIGNAL(triggered()), this, SLOT(cut()), Qt::UniqueConnection);
+    connect(cutAct, SIGNAL(triggered()), this, SLOT(cut()), Qt::QueuedConnection);
 
     copyAct = new QAction(QIcon(":/copy.svg"), tr("&Copy\tCtrl+C"), this);
     copyAct->setStatusTip(tr("Copy the current selection's contents to the clipboard"));
     copyAct->setEnabled(false);
-    connect(copyAct, SIGNAL(triggered()), this, SLOT(copy()), Qt::UniqueConnection);
+    connect(copyAct, SIGNAL(triggered()), this, SLOT(copy()), Qt::QueuedConnection);
 
     pasteAct = new QAction(QIcon(":/paste.svg"), tr("&Paste\tCtrl+V"), this);
     pasteAct->setStatusTip(tr("Paste the clipboard's contents into the current selection"));
     pasteAct->setEnabled(false);
-    connect(pasteAct, SIGNAL(triggered()), this, SLOT(paste()), Qt::UniqueConnection);
+    connect(pasteAct, SIGNAL(triggered()), this, SLOT(paste()), Qt::QueuedConnection);
 
     undoAct = new QAction(QIcon(":/undo.svg"), tr("Undo\tCtrl+Z"), this);
     undoAct->setStatusTip(tr("Undo the last action"));
     undoAct->setEnabled(false);
-    connect(undoAct, SIGNAL(triggered()), this, SLOT(undo()), Qt::UniqueConnection);
+    connect(undoAct, SIGNAL(triggered()), this, SLOT(undo()), Qt::QueuedConnection);
 
     redoAct = new QAction(QIcon(":/redo.svg"), tr("Redo\tCtrl+Shift+Z"), this);
     redoAct->setStatusTip(tr("Redo the last action"));
@@ -685,53 +685,53 @@ void EditorWidget::createActions()
     runAct =  new QAction(QIcon(":/runtobk.png"),tr("Run To Breakpoint"), this);
     runAct->setStatusTip(tr("Run to next breakpoint"));
     runAct->setEnabled(false);
-    connect(runAct, SIGNAL(triggered()), this, SLOT(run()), Qt::UniqueConnection);
+    connect(runAct, SIGNAL(triggered()), this, SLOT(run()), Qt::QueuedConnection);
 
     stepAct = new QAction(QIcon(":/step.svg"),tr("Step"), this);
     stepAct->setStatusTip(tr("Step debugger"));
     stepAct->setEnabled(false);
-    connect( stepAct, SIGNAL(triggered()), this, SLOT(step()), Qt::UniqueConnection );
+    connect( stepAct, SIGNAL(triggered()), this, SLOT(step()), Qt::QueuedConnection );
 
     stepOverAct = new QAction(QIcon(":/rotatecw.svg"),tr("StepOver"), this);
     stepOverAct->setStatusTip(tr("Step Over"));
     stepOverAct->setEnabled(false);
     stepOverAct->setVisible(false);
-    connect( stepOverAct, SIGNAL(triggered()), this, SLOT(stepOver()), Qt::UniqueConnection );
+    connect( stepOverAct, SIGNAL(triggered()), this, SLOT(stepOver()), Qt::QueuedConnection );
 
     pauseAct = new QAction(QIcon(":/pause.svg"),tr("Pause"), this);
     pauseAct->setStatusTip(tr("Pause debugger"));
     pauseAct->setEnabled(false);
-    connect( pauseAct, SIGNAL(triggered()), this, SLOT(pause()), Qt::UniqueConnection );
+    connect( pauseAct, SIGNAL(triggered()), this, SLOT(pause()), Qt::QueuedConnection );
 
     resetAct = new QAction(QIcon(":/reset.svg"),tr("Reset"), this);
     resetAct->setStatusTip(tr("Reset debugger"));
     resetAct->setEnabled(false);
-    connect( resetAct, SIGNAL(triggered()), this, SLOT(reset()), Qt::UniqueConnection );
+    connect( resetAct, SIGNAL(triggered()), this, SLOT(reset()), Qt::QueuedConnection );
 
     stopAct = new QAction(QIcon(":/stop.svg"),tr("Stop Debugger"), this);
     stopAct->setStatusTip(tr("Stop debugger"));
     stopAct->setEnabled(false);
-    connect( stopAct, SIGNAL(triggered()), this, SLOT(stop()), Qt::UniqueConnection );
+    connect( stopAct, SIGNAL(triggered()), this, SLOT(stop()), Qt::QueuedConnection );
 
     compileAct = new QAction(QIcon(":/verify.svg"),tr("Compile"), this);
     compileAct->setStatusTip(tr("Compile Source"));
     compileAct->setEnabled(false);
-    connect( compileAct, SIGNAL(triggered()), this, SLOT(compile()), Qt::UniqueConnection );
+    connect( compileAct, SIGNAL(triggered()), this, SLOT(compile()), Qt::QueuedConnection );
 
     loadAct = new QAction(QIcon(":/upload.svg"),tr("UpLoad"), this);
     loadAct->setStatusTip(tr("Load Firmware"));
     loadAct->setEnabled(false);
-    connect( loadAct, SIGNAL(triggered()), this, SLOT(upload()), Qt::UniqueConnection );
+    connect( loadAct, SIGNAL(triggered()), this, SLOT(upload()), Qt::QueuedConnection );
 
     findQtAct = new QAction(QIcon(":/find.svg"),tr("Find Replace"), this);
     findQtAct->setStatusTip(tr("Find Replace"));
     findQtAct->setEnabled(false);
-    connect(findQtAct, SIGNAL(triggered()), this, SLOT(findReplaceDialog()), Qt::UniqueConnection);
+    connect(findQtAct, SIGNAL(triggered()), this, SLOT(findReplaceDialog()), Qt::QueuedConnection);
 
     debugAct =  new QAction(QIcon(":/debug.svg"),tr("Debug"), this);
     debugAct->setStatusTip(tr("Start Debugger"));
     debugAct->setEnabled(false);
-    connect(debugAct, SIGNAL(triggered()), this, SLOT(debug()), Qt::UniqueConnection);
+    connect(debugAct, SIGNAL(triggered()), this, SLOT(debug()), Qt::QueuedConnection);
 }
 
 void EditorWidget::createToolBars()

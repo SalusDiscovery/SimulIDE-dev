@@ -108,7 +108,7 @@ bool FindReplace::find( bool next )
     if( whole->isChecked() )  flags |= QTextDocument::FindWholeWords;
     if( regexp->isChecked() )
     {
-        QRegExp reg( toSearch, (caseS->isChecked() ? Qt::CaseSensitive : Qt::CaseInsensitive) );
+        QRegularExpression reg( toSearch, (caseS->isChecked() ? QRegularExpression::NoPatternOption : QRegularExpression::CaseInsensitiveOption) );
 
         m_textCursor = m_editor->document()->find( reg, m_textCursor, flags );
         m_editor->setTextCursor( m_textCursor );

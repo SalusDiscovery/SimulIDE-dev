@@ -635,7 +635,7 @@ void SubPackage::savePackage( QString fileName )
           return;
     }
     QTextStream out(&file);
-    out.setCodec("UTF-8");
+    out.setEncoding(QStringConverter::Utf8);
 
     QApplication::setOverrideCursor(Qt::WaitCursor);
 
@@ -791,7 +791,7 @@ EditDialog::EditDialog( SubPackage* pack, Pin* eventPin, QWidget* parent )
     layout->addWidget( bb );
 
     QFontMetrics fm( m_nameLabel->font() );
-    double scale = fm.width(" ")/2.0;
+    double scale = fm.horizontalAdvance(" ")/2.0;
     m_nameLineEdit->setFixedWidth( 60*scale );
     m_idLineEdit->setFixedWidth( 60*scale );
     m_spaceBox->setFixedWidth( 60*scale );

@@ -4,10 +4,11 @@
  ***( see copyright.txt file at root folder )*******************************/
 
 #include <QApplication>
+#include <QGuiApplication>
 #include <QFileDialog>
 #include <QSettings>
 #include <QStandardPaths>
-#include <QDesktopWidget>
+#include <QWidget>
 #include <QMessageBox>
 #include <QSplitter>
 #include <QLineEdit>
@@ -40,7 +41,7 @@ MainWindow::MainWindow()
 
     this->setWindowTitle( m_version );
 
-    m_configDir.setPath( QStandardPaths::writableLocation( QStandardPaths::DataLocation ) );
+    m_configDir.setPath( QStandardPaths::writableLocation( QStandardPaths::AppLocalDataLocation ) );
 
     m_settings     = new QSettings( getConfigPath("simulide.ini"), QSettings::IniFormat, this );
     m_compSettings = new QSettings( getConfigPath("compList.ini"), QSettings::IniFormat, this );
@@ -62,7 +63,7 @@ MainWindow::MainWindow()
     {
         scale = m_settings->value( "fontScale" ).toFloat();
     }else{
-        float dpiX = qApp->desktop()->logicalDpiX();
+        float dpiX =  QGuiApplication::primaryScreen() -> logicalDotsPerInchX();
         scale = dpiX/96.0;
     }
     setFontScale( scale );
@@ -211,7 +212,8 @@ void MainWindow::setState( QString state )
 
 void MainWindow::createWidgets()
 {
-    QWidget *centralWidget = new QWidget( this );
+    // QWidget *centralWidget = new QWidget( this );
+    QWidget *centralWidget = new QWidget();
     setCentralWidget(centralWidget);
 
     QGridLayout *baseWidgetLayout = new QGridLayout( centralWidget );
@@ -227,14 +229,14 @@ void MainWindow::createWidgets()
     m_sidepanel->tabBar()->setStyleSheet("QTabBar { font-size:"+fontSize+"px; }");
     m_Centralsplitter->addWidget( m_sidepanel );
 
-    m_componentWidget = new QWidget( this );
+    m_componentWidget = new QWidget();
     m_componentWidgetLayout = new QVBoxLayout( m_componentWidget );
     m_componentWidgetLayout->setSpacing(0);
     m_componentWidgetLayout->setContentsMargins(0, 0, 0, 0);
 
     QHBoxLayout* searchLayout = new QHBoxLayout( this );
 
-    m_searchComponent = new QLineEdit( this );
+    m_searchComponent = new QLineEdit();
     m_searchComponent->setPlaceholderText( tr("Search Components"));
     searchLayout->addWidget( m_searchComponent );
     connect( m_searchComponent, SIGNAL( editingFinished() ),

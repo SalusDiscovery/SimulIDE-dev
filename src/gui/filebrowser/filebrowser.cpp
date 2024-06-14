@@ -139,14 +139,14 @@ void FileBrowser::contextMenuEvent( QContextMenuEvent* event )
         if( m_fileSystemModel->isDir( currentIndex()) )
         {
             QAction* addBookMarkAction = menu.addAction(QIcon(":/setroot.png"),tr("Add Bookmark"));
-            connect( addBookMarkAction, SIGNAL( triggered()), 
-                     this,              SLOT(   addBookMark() ), Qt::UniqueConnection );
+            connect( addBookMarkAction, SIGNAL( triggered()),
+                     this,              SLOT(   addBookMark() ), Qt::QueuedConnection );
                      
             menu.addSeparator();
         }else{
             QAction* openWithEditor = menu.addAction(QIcon(":/open.png"),tr("Open in editor"));
             connect( openWithEditor, SIGNAL( triggered()), 
-                     this,           SLOT(   openInEditor()), Qt::UniqueConnection );
+                     this,           SLOT(   openInEditor()), Qt::QueuedConnection );
                      
             menu.addSeparator();
 
@@ -155,14 +155,14 @@ void FileBrowser::contextMenuEvent( QContextMenuEvent* event )
             {
                 QAction* convertXml = menu.addAction(QIcon(":/open.png"),tr("Convert components"));
                 connect( convertXml, SIGNAL( triggered()),
-                         this,       SLOT(   convert()), Qt::UniqueConnection );
+                         this,       SLOT(   convert()), Qt::QueuedConnection );
             }
         }
         QAction* showHidden = menu.addAction( tr("Show Hidden"));
         showHidden->setCheckable( true );
         showHidden->setChecked( m_showHidden );
         connect( showHidden, SIGNAL( triggered()), 
-                 this,       SLOT(   showHidden()), Qt::UniqueConnection );
+                 this,       SLOT(   showHidden()), Qt::QueuedConnection );
         menu.exec( eventPos );
 }   }
 

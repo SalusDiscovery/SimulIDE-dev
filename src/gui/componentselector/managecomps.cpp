@@ -23,7 +23,7 @@ manCompDialog::manCompDialog( QWidget* parent )
     table->setColumnWidth( 1, 90 );
 
     connect( table, &QTableWidget::itemChanged,
-              this, &manCompDialog::slotItemChanged, Qt::UniqueConnection );
+              this, &manCompDialog::slotItemChanged, Qt::QueuedConnection );
 }
 
 void manCompDialog::addItem( QTreeWidgetItem* item )
@@ -51,7 +51,7 @@ void manCompDialog::addItem( QTreeWidgetItem* item )
     int childCount = item->childCount();
     if( childCount > 0 )
     {
-        listItem->setBackgroundColor( QColor(240, 235, 245));
+        listItem->setBackground( QColor(240, 235, 245));
         listItem->setForeground( QBrush( QColor( 110, 95, 50 )));
 
         for( int i=0; i<childCount; i++ ) addItem( item->child( i ) );

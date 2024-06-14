@@ -31,7 +31,7 @@ void EnumVal::setup( bool isComp )
 
     //float scale = MainWindow::self()->fontScale();
     QFontMetrics fm( valueBox->font() );
-    float scale = fm.width(" ")/2;
+    float scale = fm.horizontalAdvance(" ")/2;
     valueBox->setFixedWidth( 170.0*scale );
 
     //QFont font = valueBox->font();

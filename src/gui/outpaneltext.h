@@ -9,6 +9,7 @@
 #include <QPlainTextEdit>
 #include <QSyntaxHighlighter>
 #include <QObject>
+#include <QRegExp>
 
 #include "updatable.h"
 

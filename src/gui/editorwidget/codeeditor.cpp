@@ -86,13 +86,13 @@ CodeEditor::CodeEditor( QWidget* parent, OutPanelText* outPane )
              this       , &CodeEditor::insertCompletion );
 
     connect( this, &CodeEditor::blockCountChanged,
-             this, &CodeEditor::updateLineNumberAreaWidth, Qt::UniqueConnection );
+             this, &CodeEditor::updateLineNumberAreaWidth, Qt::QueuedConnection );
 
     connect( this, &CodeEditor::updateRequest,
-             this, &CodeEditor::updateLineNumberArea, Qt::UniqueConnection);
+             this, &CodeEditor::updateLineNumberArea, Qt::QueuedConnection);
 
     connect( this, &CodeEditor::cursorPositionChanged,
-             this, &CodeEditor::highlightCurrentLine, Qt::UniqueConnection);
+             this, &CodeEditor::highlightCurrentLine, Qt::QueuedConnection);
     
     setLineWrapMode( QPlainTextEdit::NoWrap );
     updateLineNumberAreaWidth( 0 );
@@ -511,11 +511,11 @@ int CodeEditor::getSyntaxCoincidences()
          || line.startsWith(".") ) continue;
 
         for( QString instruction : m_avrInstr )
-        { if( line.contains( QRegExp( "\\b"+instruction+"\\b" ) )) {avr++; matches++;} }
+        { if( line.contains( QRegularExpression( "\\b"+instruction+"\\b" ))) {avr++; matches++;} }
         for( QString instruction : m_picInstr )
-        { if( line.contains( QRegExp( "\\b"+instruction+"\\b" ) )) {pic++; matches++;} }
+        { if( line.contains( QRegularExpression( "\\b"+instruction+"\\b" ))) {pic++; matches++;} }
         for( QString instruction : m_i51Instr )
-        { if( line.contains( QRegExp( "\\b"+instruction+"\\b" ) )) {i51++; matches++;} }
+        { if( line.contains( QRegularExpression( "\\b"+instruction+"\\b" ))) {i51++; matches++;} }
         if( matches > 200 || ++nlines > 400 ) break;
     }
     if( matches == 0 ) return 0;
@@ -714,29 +714,29 @@ void CodeEditor::contextMenuEvent( QContextMenuEvent* event )
 
     QAction* undoAction = menu.addAction(QIcon(":/undo.svg"),tr("Undo")+"\tCtrl+Z");
     connect( undoAction, &QAction::triggered,
-              this, &CodeEditor::undo, Qt::UniqueConnection );
+              this, &CodeEditor::undo, Qt::QueuedConnection );
 
     QAction* redoAction = menu.addAction(QIcon(":/redo.svg"),tr("Redo")+"\tCtrl+Y");
     connect( redoAction, &QAction::triggered,
-              this, &CodeEditor::redo, Qt::UniqueConnection );
+              this, &CodeEditor::redo, Qt::QueuedConnection );
 
     menu.addSeparator();
 
     QAction* cutAction = menu.addAction(QIcon(":/cut.svg"),tr("Cut")+"\tCtrl+X");
     connect( cutAction, &QAction::triggered,
-                  this, &CodeEditor::cut, Qt::UniqueConnection );
+                  this, &CodeEditor::cut, Qt::QueuedConnection );
 
     QAction* copyAction = menu.addAction(QIcon(":/copy.svg"),tr("Copy")+"\tCtrl+C");
     connect( copyAction, &QAction::triggered,
-                   this, &CodeEditor::copy, Qt::UniqueConnection );
+                   this, &CodeEditor::copy, Qt::QueuedConnection );
 
     QAction* pasteAction = menu.addAction(QIcon(":/paste.svg"),tr("Paste")+"\tCtrl+V");
     connect( pasteAction, &QAction::triggered,
-                    this, &CodeEditor::paste, Qt::UniqueConnection );
+                    this, &CodeEditor::paste, Qt::QueuedConnection );
 
     QAction* removeAction = menu.addAction( QIcon( ":/remove.svg"),tr("Remove") );
     connect( removeAction, &QAction::triggered,
-                     this, &CodeEditor::deleteSelected, Qt::UniqueConnection );
+                     this, &CodeEditor::deleteSelected, Qt::QueuedConnection );
 
     if( !textCursor().hasSelection() ) removeAction->setDisabled( true );
 
@@ -744,7 +744,7 @@ void CodeEditor::contextMenuEvent( QContextMenuEvent* event )
 
     QAction* reloadAction = menu.addAction(QIcon(":/reload.svg"), tr("Reload Document")+"\tCtrl+R");
     connect( reloadAction, &QAction::triggered,
-             EditorWindow::self(), &EditorWindow::reload, Qt::UniqueConnection );
+             EditorWindow::self(), &EditorWindow::reload, Qt::QueuedConnection );
 
     menu.exec( event->globalPos() );
 }
@@ -828,7 +828,7 @@ void CodeEditor::saveConfig()
         return;
     }
     QTextStream out( &file );
-    out.setCodec("UTF-8");
+    out.setEncoding(QStringConverter::Utf8);
     out << config;
     file.close();
 }
@@ -838,7 +838,7 @@ int CodeEditor::lineNumberAreaWidth()
     int digits = 1;
     int max = qMax( 1, blockCount() );
     while( max >= 10 ) { max /= 10; ++digits; }
-    return  fontMetrics().height() + fontMetrics().width( QLatin1Char( '9' ) ) * digits;
+    return  fontMetrics().height() + fontMetrics().horizontalAdvance( QLatin1Char( '9' ) ) * digits;
 }
 
 void CodeEditor::updateLineNumberArea( const QRect &rect, int dy )
@@ -1082,17 +1082,17 @@ void LineNumberArea::contextMenuEvent( QContextMenuEvent *event)
 
     QAction* addBrkAction = menu.addAction( QIcon(":/breakpoint.png"),tr( "Add BreakPoint" ) );
     connect( addBrkAction, &QAction::triggered,
-               m_codeEditor, &CodeEditor::slotAddBreak, Qt::UniqueConnection );
+               m_codeEditor, &CodeEditor::slotAddBreak, Qt::QueuedConnection );
 
     QAction* remBrkAction = menu.addAction( QIcon(":/nobreakpoint.png"),tr( "Remove BreakPoint" ) );
     connect( remBrkAction, &QAction::triggered,
-               m_codeEditor, &CodeEditor::slotRemBreak, Qt::UniqueConnection );
+               m_codeEditor, &CodeEditor::slotRemBreak, Qt::QueuedConnection );
 
     menu.addSeparator();
 
     QAction* clrBrkAction = menu.addAction( QIcon(":/remove.svg"),tr( "Clear All BreakPoints" ) );
     connect( clrBrkAction, &QAction::triggered,
-               m_codeEditor, &CodeEditor::slotClearBreak, Qt::UniqueConnection );
+               m_codeEditor, &CodeEditor::slotClearBreak, Qt::QueuedConnection );
 
     if( menu.exec(event->globalPos()) != 0 ) lastPos = event->pos().y();
 }

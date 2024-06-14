@@ -4,6 +4,7 @@
  ***( see copyright.txt file at root folder )*******************************/
 
 #include <QDialog>
+#include <QRegularExpression>
 
 #include "ui_findreplace.h"
 
