@@ -12,6 +12,7 @@
 #include "plotdisplay.h"
 
 class Oscope;
+class QAbstractButton;
 
 class OscWidget : public QDialog, private Ui::OscWidget
 {
@@ -54,11 +55,11 @@ class OscWidget : public QDialog, private Ui::OscWidget
 
         void on_filterBox_valueChanged( double filter );
 
-        void on_channelGroup_buttonClicked( int ch );
-        void on_autoGroup_buttonClicked( int ch );
-        void on_triggerGroup_buttonClicked( int ch );
-        void on_hideGroup_buttonClicked( int ch );
-        void on_trackGroup_buttonClicked( int ch );
+        void on_channelGroup_idClicked( int ch );
+        void on_autoGroup_idClicked( int ch );
+        void on_triggerGroup_idClicked( int ch );
+        void on_hideGroup_idClicked( int ch );
+        void on_trackGroup_idClicked( int ch );
 
     protected:
         void closeEvent( QCloseEvent* event );

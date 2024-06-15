@@ -4,6 +4,7 @@
  ***( see copyright.txt file at root folder )*******************************/
 
 #include <QWheelEvent>
+#include <QAbstractButton>
 
 #include "oscwidget.h"
 #include "oscope.h"
@@ -73,7 +74,7 @@ OscWidget::OscWidget( QWidget* parent , Oscope* oscope )
     voltDivBox->setUnitStr( "V" );
     voltPosBox->setUnitStr( "V" );
 
-    on_channelGroup_buttonClicked( 4 ); // Avoid size changes at first click
+    on_channelGroup_idClicked( 4 ); // Avoid size changes at first click
     allButton->setChecked( true );
 }
 OscWidget::~OscWidget(){}
@@ -292,7 +293,7 @@ void OscWidget::setFilter( double filter )
     filterBox->setValue( filter );
 }
 
-void OscWidget::on_channelGroup_buttonClicked( int ch )
+void OscWidget::on_channelGroup_idClicked( int ch )
 {
     m_channel = ch;
 
@@ -307,7 +308,7 @@ void OscWidget::on_channelGroup_buttonClicked( int ch )
         updateVoltPosBox( ch, m_oscope->voltPos( ch ) );
 }    }
 
-void OscWidget::on_autoGroup_buttonClicked( int ch )
+void OscWidget::on_autoGroup_idClicked( int ch )
 { m_oscope->setAutoSC( ch ); }
 
 void OscWidget::setAuto( int ch )
@@ -317,7 +318,7 @@ void OscWidget::setAuto( int ch )
     autoLabel->setStyleSheet( "background-color:"+color );
 }
 
-void OscWidget::on_triggerGroup_buttonClicked( int ch )
+void OscWidget::on_triggerGroup_idClicked( int ch )
 { m_oscope->setTrigger( ch ); }
 
 void OscWidget::setTrigger( int ch )
@@ -327,7 +328,7 @@ void OscWidget::setTrigger( int ch )
     trigLabel->setStyleSheet( "background-color:"+color );
 }
 
-void OscWidget::on_hideGroup_buttonClicked( int ch )
+void OscWidget::on_hideGroup_idClicked( int ch )
 {
     if( ch == 4 )
     {
@@ -343,7 +344,7 @@ void OscWidget::hideChannel( int ch, bool hide )
     if( ch<4 && hide ) hideGroup->button( 4 )->setChecked( false );
 }
 
-void OscWidget::on_trackGroup_buttonClicked( int ch )
+void OscWidget::on_trackGroup_idClicked( int ch )
 { m_oscope->setTracks( ch ); }
 
 void OscWidget::closeEvent( QCloseEvent* event )
