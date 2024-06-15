@@ -70,13 +70,7 @@
     </widget>
    </item>
    <item>
-    <widget class="DSpinBox" name="valueBox">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
+    <widget class="QDoubleSpinBox" name="valueBox">
      <property name="minimumSize">
       <size>
        <width>10</width>
@@ -90,7 +84,7 @@
       </size>
      </property>
      <property name="locale">
-      <locale language="C" country="AnyCountry"/>
+      <locale language="C" country="AnyTerritory"/>
      </property>
      <property name="specialValueText">
       <string notr="true"/>
@@ -139,7 +133,7 @@
       <string notr="true"/>
      </property>
      <property name="locale">
-      <locale language="C" country="AnyCountry"/>
+      <locale language="C" country="AnyTerritory"/>
      </property>
      <property name="currentText">
       <string notr="true"/>
@@ -189,7 +183,7 @@
       </sizepolicy>
      </property>
      <property name="locale">
-      <locale language="C" country="AnyCountry"/>
+      <locale language="C" country="AnyTerritory"/>
      </property>
      <property name="text">
       <string/>
@@ -201,13 +195,6 @@
    </item>
   </layout>
  </widget>
- <customwidgets>
-  <customwidget>
-   <class>DSpinBox</class>
-   <extends>QDoubleSpinBox</extends>
-   <header location="global">dspinbox.h</header>
-  </customwidget>
- </customwidgets>
  <resources/>
  <connections/>
 </ui>
