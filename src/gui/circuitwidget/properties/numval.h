@@ -27,7 +27,7 @@ class NumVal : public PropVal, private Ui::NumVal
 
     public slots:
         void on_showVal_toggled( bool checked );
-        void on_valueBox_valueChanged( double val );
+        void on_valueBox_textChanged( const QString val );
         void on_unitBox_currentTextChanged( QString unit );
 
     private:

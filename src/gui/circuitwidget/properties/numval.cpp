@@ -88,7 +88,7 @@ void NumVal::on_showVal_toggled( bool checked )
     m_blocked = false;
 }
 
-void NumVal::on_valueBox_valueChanged( double val )
+void NumVal::on_valueBox_textChanged(const QString val)
 {
     if( m_blocked ) return;
     m_blocked = true;
