@@ -19,7 +19,7 @@ eJfet::eJfet( QString id )
     
     m_Idss      = 0.050;// [A]
     m_Vp        = -3;   // [V]
-    m_LambdaInv    = 100;// [Vds] (i.e., slope of Idss in saturation region that also impacts triode region accordingly)
+    m_LambdaInv    = 1000;// [Vds] (i.e., slope of Idss in saturation region that also impacts triode region accordingly)
 
     m_ePin.resize(3);
 }
