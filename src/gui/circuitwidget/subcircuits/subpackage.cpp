@@ -528,8 +528,9 @@ void SubPackage::setPackageFile( QString package )
     m_pkgeFile = package;
     if( package.isEmpty() ) return;
 
-    for( Pin* pin : m_pin ) deletePin( pin );
     m_pkgePins.clear();
+    for( Pin* pin : m_pin ) deletePin( pin );
+    m_pin.clear();
 
     QString domText = fileToString( fileNameAbs, "SubPackage::setPackageFile");
     QString pkgStr  = convertPackage( domText );
@@ -672,8 +673,8 @@ QString SubPackage::pinEntry( Pin* pin )
     QString ypos   = "ypos=\""  +QString::number( pin->y() )+"\"";
     QString angle  = "angle=\"" +QString::number( pin->pinAngle() )+"\"";
     QString length = "length=\""+QString::number( pin->length() )+"\"";
-    QString id     = "id=\""    +pin->pinId().split("-").last().replace(" ", "")+"\"";
-    QString label  = "label=\"" +pin->getLabelText().replace("<","&#x3C;").replace("=","&#x3D;").replace(">","&#x3E;")+"\"";
+    QString id     = "id=\""    +pin->pinId().split("-").last().replace("<","&lt;").replace( " ", "" )+"\"";
+    QString label  = "label=\"" +pin->getLabelText().replace("<","&lt;")+"\""; //.replace("<","&#x3C;").replace("=","&#x3D;").replace(">","&#x3E;")+"\"";
     QString space  = "space=\"" +QString::number( pin->space() )+"\"";
     QString type;
     if     ( pin->unused()   ) type = "nc";

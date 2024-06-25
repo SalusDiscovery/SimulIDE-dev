@@ -96,6 +96,7 @@ QString Chip::convertPackage( QString domText ) // Static, converts xml to new f
         line.replace("<packageB","Package;");
         line.replace("&#x3C;", "<").replace("&#x3D;", "=").replace("&#x3E;", ">");
         line.replace("&#x3C" , "<").replace("&#x3D" , "=").replace("&#x3E" , ">");
+        line.replace("&lt;" , "<");
         line.replace("&#xa;","");
         line.replace("Pin;","\nPin;");
         line.replace("<pin","Pin;");
@@ -211,11 +212,14 @@ void Chip::setPinStr( QString pin )
     for( QString token : tokens )
     {
         while( token.startsWith(" ") ) token.remove( 0, 1 );
-        QStringList p = token.split("=");
-        if( p.size() != 2 ) continue;
 
-        QString prop = p.first();
-        QString val  = p.last();
+        int index = token.indexOf("=");
+        if( index == -1 ) continue;
+
+        QString prop = token.left( index ); //  p.first().toLower();// Property_name
+        index++;
+        QString val  = token.mid( index, prop.length()-index ); //p.last(); // Property_value
+
         if     ( prop == "xpos"  ) xpos   = val.toInt();
         else if( prop == "ypos"  ) ypos   = val.toInt();
         else if( prop == "angle" ) angle  = val.toInt();
